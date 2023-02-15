@@ -104,6 +104,14 @@ class Quiz:
         options = self.Table.get_all_user_words(self.user_id)
         return sorted(options, key=lambda x: ebisu.predictRecall(x[1], x[2]))[0][0]
 
+    def get_word_to_recall(self) -> Word:
+        options = self.Table.get_all_user_words(self.user_id)
+
+        population = [option[0] for option in options]
+        weights = [1 - ebisu.predictRecall(option[1], option[2], exact=1) for option in options]
+
+        return random.choices(population, weights=weights, k=1)[0]
+
     def update_word(self, word: Word, successes: float, total: float):
         _, old_ebisu, time_elapsed = self.Table.get_word_info(self.user_id, word)
         new_ebisu = ebisu.updateRecall(old_ebisu, successes, total, time_elapsed)
