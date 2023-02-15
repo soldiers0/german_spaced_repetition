@@ -1,0 +1,5 @@
+alive_progress
+ebisu~=2.1.0
+requests~=2.28.2
+beautifulsoup4~=4.11.1
+aiogram~=2.25.1
