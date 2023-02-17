@@ -105,10 +105,16 @@ class Quiz:
         return sorted(options, key=lambda x: ebisu.predictRecall(x[1], x[2]))[0][0]
 
     def get_word_to_recall(self) -> Word:
+        """
+        returns a word chosen randomly out of all words in the quiz
+        probability of a word coming up is directly tied with the probability of a recall
+        """
         options = self.Table.get_all_user_words(self.user_id)
 
         population = [option[0] for option in options]
-        weights = [1 - ebisu.predictRecall(option[1], option[2], exact=1) for option in options]
+
+        # the weight is squared to give more priority to words that are less likely to be recalled
+        weights = [(1 - ebisu.predictRecall(option[1], option[2], exact=1)) ** 2 for option in options]
 
         return random.choices(population, weights=weights, k=1)[0]
 
